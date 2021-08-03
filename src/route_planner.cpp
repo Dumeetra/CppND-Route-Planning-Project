@@ -1,4 +1,4 @@
-#include "route_planner.h"
+xs#include "route_planner.h"
 #include <algorithm>
 
 RoutePlanner::RoutePlanner(RouteModel &model, float start_x, float start_y, float end_x, float end_y): m_Model(model) {
@@ -70,25 +70,53 @@ return least;
 //   of the vector, the end node should be the last element.
 
 std::vector<RouteModel::Node> RoutePlanner::ConstructFinalPath(RouteModel::Node *current_node) {
-    // Create path_found vector
-    distance = 0.0f;
-    std::vector<RouteModel::Node> path_found;
-   //	auto current_node=NextNode();
-  if(current_node==end_node){
-    while(current_node!=start_node){
-    distance+=current_node->distance(current_node->parent);
-   current_node=current_node->parent;
-    path_found.push_back(current_node);
-  distance *= m_Model.MetricScale(); // Multiply the distance by the scale of the map to get meters.
-  }
-  }
- std::vector<RouteModel::Node> ordered_path;
-  for(int i=0;i<size(path_found);i++){
-    ordered_path.push_back(path_found);
-  }
-  path_found=ordered_path;
-   return path_found;
+
+  // Create path_found vector
+
+distance = 0.0f;
+
+std::vector<RouteModel::Node> path_found;
+
+// auto current_node=NextNode();
+
+if(current_node==end_node){
+
+while(current_node!=start_node){
+
+
+distance+=current_node->distance(*(current_node->parent));
+
+current_node=current_node->parent;
+
+path_found.push_back(*current_node);
+  
+
+
 }
+  if(current_node==start_node){
+ distance+=current_node->distance(*(current_node->parent));
+
+current_node=current_node->parent;
+
+path_found.push_back(*current_node);
+
+  }
+}
+  distance *= m_Model.MetricScale(); // Multiply the distance by the scale of the map to get meters.
+  
+std::vector<RouteModel::Node> ordered_path;
+for(int i=0; i<path_found.size()+1; i++){
+
+ordered_path.push_back(path_found[i]);
+
+}
+
+path_found=ordered_path;
+
+return path_found;
+
+}
+
 // TODO 7: Write the A* Search algorithm here.
 // Tips:
 // - Use the AddNeighbors method to add all of the neighbors of the current node to the open_list.
